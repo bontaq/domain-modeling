@@ -52,6 +52,7 @@ executable ecomm-exe
       base >=4.7 && <5
     , parsec
     , hspec
+    , time
     , optparse-applicative
     , ecomm
   default-language: Haskell2010

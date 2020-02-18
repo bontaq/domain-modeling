@@ -3,6 +3,7 @@
 module OrderTaking.Domain where
 
 import Data.List.NonEmpty
+import Data.Time
 import OrderTaking.UnitQuantity
 import OrderTaking.ValidatedAddress
 
@@ -24,6 +25,7 @@ type OrderLineId = String
 type CustomerId = String
 type Price = Int
 
+data UnvalidatedCustomerInfo = UnvalidatedCustomerInfo
 data UnvalidatedAddress = UnvalidatedAddress
 
 type AddressValidationService =
@@ -32,6 +34,7 @@ type AddressValidationService =
 data CustomerInfo = CustomerInfo
 data ShippingAddress = ShippingAddress
 data BillingAddress = BillingAddress
+data Address = Address
 data BillingAmount = BillingAmount
 
 data OrderLine = OrderLine {
@@ -42,20 +45,37 @@ data OrderLine = OrderLine {
   , price :: Price
   }
 
-data Order = Order {
-  id :: OrderId
-  , customerId :: CustomerId
-  , shippingAddress :: ValidatedAddress
-  , billingAddress :: BillingAddress
-  , orderLines :: NonEmpty OrderLine
+type ValidatedOrderLine = OrderLine
+
+data ValidatedOrder = ValidatedOrder {
+  orderId :: OrderId
+  , customerInfo :: CustomerInfo
+  , shippingAddress :: Address
+  , billingAddress :: Address
+  , orderLines :: [ValidatedOrderLine]
+  }
+
+type PricedOrderLine = OrderLine
+
+data PricedOrder = PricedOrder {
+  orderId :: OrderId
+  , customerInfo :: CustomerInfo
+  , shippingAddress :: Address
+  , billingAddress :: Address
+  , orderLines :: [PricedOrderLine]
   , amountToBill :: BillingAmount
   }
 
 data UnvalidatedOrder = UnvalidatedOrder {
-  orderId :: OrderId
-  , customerInfo :: CustomerInfo
+  orderId :: String
+  , customerInfo :: UnvalidatedCustomerInfo
   , shippingAddress :: UnvalidatedAddress
   }
+
+data Order =
+  Unvalidated UnvalidatedOrder
+  | Validated ValidatedOrder
+  | Priced PricedOrder
 
 data PlaceOrderEvents =
   AcknowledgmentSent
@@ -69,5 +89,20 @@ data ValidationError = ValidationError {
 
 type PlaceOrderError = [ValidationError]
 
-type PlaceOrder =
-  UnvalidatedOrder -> Result PlaceOrderEvents PlaceOrderError
+-- type PlaceOrder =
+--   UnvalidatedOrder -> Result PlaceOrderEvents PlaceOrderError
+
+data Command a = Command {
+  content :: a
+  , timestamp :: UTCTime
+  , userId :: String
+  }
+
+type PlaceOrder = Command UnvalidatedOrder
+type ChangeOrder = Command UnvalidatedOrder
+type CancelOrder = Command UnvalidatedOrder
+
+data OrderTakingCommand =
+  Place PlaceOrder
+  | Change ChangeOrder
+  | Cancel CancelOrder
