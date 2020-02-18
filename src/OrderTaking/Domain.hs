@@ -2,6 +2,8 @@
 
 module OrderTaking.Domain where
 
+import OrderTaking.UnitQuantity
+
 type Result a b = Either a b
 
 data WidgetCode = WidgetCode String
@@ -10,7 +12,6 @@ data ProductCode =
   Widget WidgetCode
   | Gizmo GizmoCode
 
-data UnitQuantity = UnitQuantity Int
 data KilogramQuantity = KilogramQuantity Float
 data OrderQuantity =
   Unit UnitQuantity
