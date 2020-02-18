@@ -4,6 +4,7 @@ module OrderTaking.Domain where
 
 import Data.List.NonEmpty
 import OrderTaking.UnitQuantity
+import OrderTaking.ValidatedAddress
 
 type Result a b = Either a b
 
@@ -23,6 +24,11 @@ type OrderLineId = String
 type CustomerId = String
 type Price = Int
 
+data UnvalidatedAddress = UnvalidatedAddress
+
+type AddressValidationService =
+  UnvalidatedAddress -> ValidatedAddress
+
 data CustomerInfo = CustomerInfo
 data ShippingAddress = ShippingAddress
 data BillingAddress = BillingAddress
@@ -39,7 +45,7 @@ data OrderLine = OrderLine {
 data Order = Order {
   id :: OrderId
   , customerId :: CustomerId
-  , shippingAddress :: ShippingAddress
+  , shippingAddress :: ValidatedAddress
   , billingAddress :: BillingAddress
   , orderLines :: NonEmpty OrderLine
   , amountToBill :: BillingAmount
@@ -48,7 +54,7 @@ data Order = Order {
 data UnvalidatedOrder = UnvalidatedOrder {
   orderId :: OrderId
   , customerInfo :: CustomerInfo
-  , shippingAddress :: ShippingAddress
+  , shippingAddress :: UnvalidatedAddress
   }
 
 data PlaceOrderEvents =
