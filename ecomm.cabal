@@ -1,0 +1,72 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: fd266ce273ac568791e2545a6b2eddd2e5a7d93bc896a30f8e950a8fb63b376e
+
+name:           ecomm
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/ecomm#readme>
+homepage:       https://github.com/githubuser/ecomm#readme
+bug-reports:    https://github.com/githubuser/ecomm/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2019 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/ecomm
+
+library
+  exposed-modules:
+  other-modules:
+      Paths_ecomm
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+      , containers
+      , mtl
+      , transformers
+      , hspec
+      , raw-strings-qq
+      , optparse-applicative
+  default-language: Haskell2010
+
+executable ecomm-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_ecomm
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , parsec
+    , hspec
+    , optparse-applicative
+    , ecomm
+  default-language: Haskell2010
+
+test-suite ecomm-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_ecomm
+  hs-source-dirs:
+      src
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , hspec
+    , ecomm
+    , raw-strings-qq
+  default-language: Haskell2010
