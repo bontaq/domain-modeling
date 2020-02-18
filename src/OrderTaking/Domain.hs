@@ -2,6 +2,7 @@
 
 module OrderTaking.Domain where
 
+import Data.List.NonEmpty
 import OrderTaking.UnitQuantity
 
 type Result a b = Either a b
@@ -40,7 +41,7 @@ data Order = Order {
   , customerId :: CustomerId
   , shippingAddress :: ShippingAddress
   , billingAddress :: BillingAddress
-  , orderLines :: [OrderLine]
+  , orderLines :: NonEmpty OrderLine
   , amountToBill :: BillingAmount
   }
 
