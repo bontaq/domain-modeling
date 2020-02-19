@@ -77,10 +77,10 @@ data Order =
   | Validated ValidatedOrder
   | Priced PricedOrder
 
-data PlaceOrderEvents =
-  AcknowledgmentSent
-  | OrderPlaced
-  | BillableOrderPlaced
+data PlaceOrderEvent =
+  AcknowledgmentSent OrderAcknowledgementSent
+  | OrderPlaced OrderPlacedEvent
+  | BillableOrderPlaced BillableOrderPlacedEvent
 
 data ValidationError = ValidationError {
   fieldName :: String
@@ -106,3 +106,71 @@ data OrderTakingCommand =
   Place PlaceOrder
   | Change ChangeOrder
   | Cancel CancelOrder
+
+type CheckProductCodeExists =
+  ProductCode -> Bool
+
+data CheckedAddress = CheckedAddress UnvalidatedAddress
+
+data AddressValidationError = AddressValidationError String
+
+type CheckAddressExists =
+  UnvalidatedAddress -> AsyncResult AddressValidationError CheckedAddress
+
+type ValidateOrder =
+  CheckProductCodeExists
+  -> CheckAddressExists
+  -> UnvalidatedOrder
+  -> AsyncResult [ValidationError] ValidatedOrder
+
+type GetProductPrice = ProductCode -> Price
+
+data PricingError = PricingError String
+
+type PriceOrder =
+  GetProductPrice
+  -> ValidatedOrder
+  -> Either PricingError PricedOrder
+
+type EmailAddress = String
+data HtmlString = HtmlString String
+
+data OrderAcknowledgement = OrderAcknowledgement {
+  emailAddress :: EmailAddress
+  , letter :: HtmlString
+  }
+
+type CreateOrderAcknowledgmentLetter =
+  PricedOrder -> HtmlString
+
+data SendResult = Send | NotSent
+
+type SendOrderAcknowledgment =
+  OrderAcknowledgement -> SendResult
+
+data OrderAcknowledgementSent = OrderAcknowledgementSent {
+  orderId :: OrderId
+  , emailAddress :: EmailAddress
+  }
+
+type AcknowledgeOrder =
+  CreateOrderAcknowledgmentLetter
+  -> SendOrderAcknowledgment -- async dep
+  -> PricedOrder
+  -> IO (Maybe OrderAcknowledgementSent)
+
+--
+-- Events
+--
+type OrderPlacedEvent = PricedOrder
+
+data BillableOrderPlacedEvent = BillableOrderPlacedEvent {
+  orderId :: OrderId
+  , billingAddress :: Address
+  , amountToBill :: BillingAmount
+  }
+
+type AsyncResult failure success = IO (Either failure success)
+
+type CreateEvents =
+  PricedOrder -> [PlaceOrderEvent]
