@@ -66,21 +66,21 @@ data PricedOrder = PricedOrder {
   , amountToBill :: BillingAmount
   }
 
-data UnvalidatedOrder = UnvalidatedOrder {
-  orderId :: String
-  , customerInfo :: UnvalidatedCustomerInfo
-  , shippingAddress :: UnvalidatedAddress
-  }
+-- data UnvalidatedOrder = UnvalidatedOrder {
+--   orderId :: String
+--   , customerInfo :: UnvalidatedCustomerInfo
+--   , shippingAddress :: UnvalidatedAddress
+--   }
 
-data Order =
-  Unvalidated UnvalidatedOrder
-  | Validated ValidatedOrder
-  | Priced PricedOrder
+-- data Order =
+--   Unvalidated UnvalidatedOrder
+--   | Validated ValidatedOrder
+--   | Priced PricedOrder
 
-data PlaceOrderEvent =
-  AcknowledgmentSent OrderAcknowledgementSent
-  | OrderPlaced OrderPlacedEvent
-  | BillableOrderPlaced BillableOrderPlacedEvent
+-- data PlaceOrderEvent =
+--   AcknowledgmentSent OrderAcknowledgementSent
+--   | OrderPlaced OrderPlacedEvent
+--   | BillableOrderPlaced BillableOrderPlacedEvent
 
 data ValidationError = ValidationError {
   fieldName :: String
@@ -98,14 +98,14 @@ data Command a = Command {
   , userId :: String
   }
 
-type PlaceOrder = Command UnvalidatedOrder
-type ChangeOrder = Command UnvalidatedOrder
-type CancelOrder = Command UnvalidatedOrder
+-- type PlaceOrder = Command UnvalidatedOrder
+-- type ChangeOrder = Command UnvalidatedOrder
+-- type CancelOrder = Command UnvalidatedOrder
 
-data OrderTakingCommand =
-  Place PlaceOrder
-  | Change ChangeOrder
-  | Cancel CancelOrder
+-- data OrderTakingCommand =
+--   Place PlaceOrder
+--   | Change ChangeOrder
+--   | Cancel CancelOrder
 
 type CheckProductCodeExists =
   ProductCode -> Bool
@@ -117,19 +117,19 @@ data AddressValidationError = AddressValidationError String
 type CheckAddressExists =
   UnvalidatedAddress -> AsyncResult AddressValidationError CheckedAddress
 
-type ValidateOrder =
-  CheckProductCodeExists
-  -> CheckAddressExists
-  -> UnvalidatedOrder
-  -> AsyncResult [ValidationError] ValidatedOrder
+-- type ValidateOrder =
+--   CheckProductCodeExists  -- dep
+--   -> CheckAddressExists   -- dep
+--   -> UnvalidatedOrder     -- input
+--   -> AsyncResult [ValidationError] ValidatedOrder
 
 type GetProductPrice = ProductCode -> Price
 
 data PricingError = PricingError String
 
 type PriceOrder =
-  GetProductPrice
-  -> ValidatedOrder
+  GetProductPrice    -- dep
+  -> ValidatedOrder  -- input
   -> Either PricingError PricedOrder
 
 type EmailAddress = String
@@ -148,21 +148,22 @@ data SendResult = Send | NotSent
 type SendOrderAcknowledgment =
   OrderAcknowledgement -> SendResult
 
-data OrderAcknowledgementSent = OrderAcknowledgementSent {
-  orderId :: OrderId
-  , emailAddress :: EmailAddress
-  }
+-- data OrderAcknowledgementSent = OrderAcknowledgementSent {
+--   orderId :: OrderId
+--   , emailAddress :: EmailAddress
+--   }
 
-type AcknowledgeOrder =
-  CreateOrderAcknowledgmentLetter
-  -> SendOrderAcknowledgment -- async dep
-  -> PricedOrder
-  -> IO (Maybe OrderAcknowledgementSent)
+-- type AcknowledgeOrder =
+--   CreateOrderAcknowledgmentLetter
+--   -> SendOrderAcknowledgment -- async dep
+--   -> PricedOrder
+--   -> IO (Maybe OrderAcknowledgementSent)
 
 --
 -- Events
 --
-type OrderPlacedEvent = PricedOrder
+
+-- type OrderPlacedEvent = PricedOrder
 
 data BillableOrderPlacedEvent = BillableOrderPlacedEvent {
   orderId :: OrderId
@@ -172,5 +173,9 @@ data BillableOrderPlacedEvent = BillableOrderPlacedEvent {
 
 type AsyncResult failure success = IO (Either failure success)
 
-type CreateEvents =
-  PricedOrder -> [PlaceOrderEvent]
+-- type CreateEvents =
+--   PricedOrder -> [PlaceOrderEvent]
+
+-- -- The Main Thing
+-- type PlaceOrderWorkflow =
+--   PlaceOrder -> AsyncResult PlaceOrderError [PlaceOrderEvent]
