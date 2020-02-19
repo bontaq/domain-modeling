@@ -45,26 +45,26 @@ data OrderLine = OrderLine {
   , price :: Price
   }
 
-type ValidatedOrderLine = OrderLine
+-- type ValidatedOrderLine = OrderLine
 
-data ValidatedOrder = ValidatedOrder {
-  orderId :: OrderId
-  , customerInfo :: CustomerInfo
-  , shippingAddress :: Address
-  , billingAddress :: Address
-  , orderLines :: [ValidatedOrderLine]
-  }
+-- data ValidatedOrder = ValidatedOrder {
+--   orderId :: OrderId
+--   , customerInfo :: CustomerInfo
+--   , shippingAddress :: Address
+--   , billingAddress :: Address
+--   , orderLines :: [ValidatedOrderLine]
+--   }
 
-type PricedOrderLine = OrderLine
+-- type PricedOrderLine = OrderLine
 
-data PricedOrder = PricedOrder {
-  orderId :: OrderId
-  , customerInfo :: CustomerInfo
-  , shippingAddress :: Address
-  , billingAddress :: Address
-  , orderLines :: [PricedOrderLine]
-  , amountToBill :: BillingAmount
-  }
+-- data PricedOrder = PricedOrder {
+--   orderId :: OrderId
+--   , customerInfo :: CustomerInfo
+--   , shippingAddress :: Address
+--   , billingAddress :: Address
+--   , orderLines :: [PricedOrderLine]
+--   , amountToBill :: BillingAmount
+--   }
 
 -- data UnvalidatedOrder = UnvalidatedOrder {
 --   orderId :: String
@@ -82,12 +82,12 @@ data PricedOrder = PricedOrder {
 --   | OrderPlaced OrderPlacedEvent
 --   | BillableOrderPlaced BillableOrderPlacedEvent
 
-data ValidationError = ValidationError {
-  fieldName :: String
-  , errorDescription :: String
-  }
+-- data ValidationError = ValidationError {
+--   fieldName :: String
+--   , errorDescription :: String
+--   }
 
-type PlaceOrderError = [ValidationError]
+-- type PlaceOrderError = [ValidationError]
 
 
 data Command a = Command {
@@ -105,15 +105,15 @@ data Command a = Command {
 --   | Change ChangeOrder
 --   | Cancel CancelOrder
 
-type CheckProductCodeExists =
-  ProductCode -> Bool
+-- type CheckProductCodeExists =
+--   ProductCode -> Bool
 
-data CheckedAddress = CheckedAddress UnvalidatedAddress
+-- data CheckedAddress = CheckedAddress UnvalidatedAddress
 
-data AddressValidationError = AddressValidationError String
+-- data AddressValidationError = AddressValidationError String
 
-type CheckAddressExists =
-  UnvalidatedAddress -> AsyncResult AddressValidationError CheckedAddress
+-- type CheckAddressExists =
+--   UnvalidatedAddress -> AsyncResult AddressValidationError CheckedAddress
 
 -- type ValidateOrder =
 --   CheckProductCodeExists  -- dep
@@ -125,10 +125,10 @@ type GetProductPrice = ProductCode -> Price
 
 data PricingError = PricingError String
 
-type PriceOrder =
-  GetProductPrice    -- dep
-  -> ValidatedOrder  -- input
-  -> Either PricingError PricedOrder
+-- type PriceOrder =
+--   GetProductPrice    -- dep
+--   -> ValidatedOrder  -- input
+--   -> Either PricingError PricedOrder
 
 type EmailAddress = String
 data HtmlString = HtmlString String
@@ -138,8 +138,8 @@ data OrderAcknowledgement = OrderAcknowledgement {
   , letter :: HtmlString
   }
 
-type CreateOrderAcknowledgmentLetter =
-  PricedOrder -> HtmlString
+-- type CreateOrderAcknowledgmentLetter =
+--   PricedOrder -> HtmlString
 
 data SendResult = Send | NotSent
 
