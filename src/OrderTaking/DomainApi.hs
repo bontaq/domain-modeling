@@ -1,7 +1,9 @@
+{-# LANGUAGE DuplicateRecordFields #-}
+
 module OrderTaking.DomainApi where
 
 import Data.Time
-import OrderTaking.Domain (PricedOrder, ValidationError)
+import OrderTaking.Domain (PricedOrder, ValidationError, AsyncResult, OrderId, Address, EmailAddress, BillingAmount)
 
 --
 -- Input data
@@ -55,6 +57,9 @@ data PlaceOrderEvent =
   | BillableOrderPlaced BillableOrderPlacedEvent
 
 type PlaceOrderError = [ValidationError]
+
+type PlaceOrder =
+  UnvalidatedOrder -> Either PlaceOrderError [PlaceOrderEvent]
 
 type PlaceOrderWorkflow =
   PlaceOrder -> AsyncResult PlaceOrderError [PlaceOrderEvent]

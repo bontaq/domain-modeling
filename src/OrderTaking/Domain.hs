@@ -89,8 +89,6 @@ data ValidationError = ValidationError {
 
 type PlaceOrderError = [ValidationError]
 
--- type PlaceOrder =
---   UnvalidatedOrder -> Result PlaceOrderEvents PlaceOrderError
 
 data Command a = Command {
   content :: a
