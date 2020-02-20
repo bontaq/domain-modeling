@@ -1,11 +1,23 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedLabels #-}
 
 module OrderTaking.PlaceOrderWorkflow where
 
 import OrderTaking.Domain
 import OrderTaking.DomainApi
 import OrderTaking.OrderId
+
+import GHC.Records
+import GHC.OverloadedLabels (IsLabel(..))
+import GHC.TypeLits (Symbol)
+
+instance forall x r a. HasField x r a => IsLabel x (r -> a) where
+  fromLabel r = getField @x r
 
 --
 -- Internal state representing the order life cycle
@@ -85,25 +97,26 @@ toAddress checkFn address = do
     Left e -> pure $ Left e
     Right (CheckedAddress a) -> -- should be type CheckedAddress instead of Address
       let
-        addressLine1' = only50 $ addressLine1 (a :: Address)
-        addressLine2' = empty50 $ addressLine2 (a :: Address)
-        addressLine3' = empty50 $ addressLine3 (a :: Address)
-        addressLine4' = empty50 $ addressLine4 (a :: Address)
-        city' = city (a :: Address)
-        zipCode' = zipCode (a :: Address)
+        addressLine1' = only50  $ #addressLine1 a
+        addressLine2' = empty50 $ #addressLine2 a
+        addressLine3' = empty50 $ #addressLine3 a
+        addressLine4' = empty50 $ #addressLine4 a
+        city' = #city a
+        zipCode' = #zipCode a
       in
-        pure $ Right $ Address <$> addressLine1'
+        undefined
+        -- pure $ Right $ Address <$> addressLine1'
 
 validateOrder :: ValidateOrder
 validateOrder checkProductCodeExist checkAddressExists unvalidatedOrder =
   let
     orderId' =
-      create $ orderId (unvalidatedOrder :: UnvalidatedOrder)
+      create $ #orderId unvalidatedOrder
     customerInfo' =
-      toCustomerInfo $ customerInfo (unvalidatedOrder :: UnvalidatedOrder)
+      toCustomerInfo $ #customerInfo unvalidatedOrder
     shippingAddress' =
       toAddress checkAddressExists
-      $ shippingAddress (unvalidatedOrder :: UnvalidatedOrder)
+      $ #shippingAddress unvalidatedOrder
   in
     pure $ Right $ ValidatedOrder {
       orderId = OrderId ""
