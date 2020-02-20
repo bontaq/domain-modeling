@@ -2,9 +2,9 @@
 
 module OrderTaking.PlaceOrderWorkflow where
 
--- import OrderTaking.DomainApi
 import OrderTaking.Domain
 import OrderTaking.DomainApi
+import OrderTaking.OrderId
 
 --
 -- Internal state representing the order life cycle
@@ -57,6 +57,27 @@ type ValidateOrder =
   -> CheckAddressExists   -- dep
   -> UnvalidatedOrder     -- input
   -> AsyncResult [ValidationError] ValidatedOrder
+
+toCustomerInfo = undefined
+toAddress = undefined
+
+validateOrder :: ValidateOrder
+validateOrder checkProductCodeExist checkAddressExists unvalidatedOrder =
+  let
+    orderId' =
+      create $ orderId (unvalidatedOrder :: UnvalidatedOrder)
+    customerInfo' =
+      toCustomerInfo $ customerInfo (unvalidatedOrder :: UnvalidatedOrder)
+    shippingAddress' =
+      toAddress $ shippingAddress (unvalidatedOrder :: UnvalidatedOrder)
+  in
+    pure $ Right $ ValidatedOrder {
+      orderId = OrderId ""
+      , customerInfo = undefined
+      , shippingAddress = undefined
+      , billingAddress = undefined
+      , orderLines = []
+    }
 
 data PricingError = PricingError String
 type GetProductPrice = ProductCode -> Price

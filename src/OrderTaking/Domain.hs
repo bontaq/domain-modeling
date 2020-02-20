@@ -6,6 +6,7 @@ import Data.List.NonEmpty
 import Data.Time
 import OrderTaking.UnitQuantity
 import OrderTaking.ValidatedAddress
+import OrderTaking.OrderId
 
 type Result a b = Either a b
 
@@ -20,7 +21,6 @@ data OrderQuantity =
   Unit UnitQuantity
   | Kilos KilogramQuantity
 
-type OrderId = String
 type OrderLineId = String
 type CustomerId = String
 type Price = Int

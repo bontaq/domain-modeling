@@ -3,7 +3,8 @@
 module OrderTaking.DomainApi where
 
 import Data.Time
-import OrderTaking.Domain (AsyncResult, OrderId, Address, EmailAddress, BillingAmount, ValidationError)
+import OrderTaking.Domain (AsyncResult, Address, EmailAddress, BillingAmount, ValidationError)
+import OrderTaking.OrderId
 -- import OrderTaking.PlaceOrderWorkflow (PricedOrder, ValidationError)
 
 --
