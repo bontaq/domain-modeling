@@ -52,13 +52,16 @@ data CheckedAddress = CheckedAddress UnvalidatedAddress
 type CheckAddressExists =
   UnvalidatedAddress -> AsyncResult AddressValidationError CheckedAddress
 
--- data ValidationError = ValidationError {
---   fieldName :: String
---   , errorDescription :: String
---   }
-
 type ValidateOrder =
   CheckProductCodeExists  -- dep
   -> CheckAddressExists   -- dep
   -> UnvalidatedOrder     -- input
   -> AsyncResult [ValidationError] ValidatedOrder
+
+data PricingError = PricingError String
+type GetProductPrice = ProductCode -> Price
+
+type PriceOrder =
+  GetProductPrice    -- dep
+  -> ValidatedOrder  -- input
+  -> Either PricingError PricedOrder
