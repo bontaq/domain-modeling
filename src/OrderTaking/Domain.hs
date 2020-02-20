@@ -40,9 +40,9 @@ data BillingAddress = BillingAddress
 
 data Address = Address {
   addressLine1 :: String
-  , addressLine2 :: String
-  , addressLine3 :: String
-  , addressLine4 :: String
+  , addressLine2 :: Maybe String
+  , addressLine3 :: Maybe String
+  , addressLine4 :: Maybe String
   , city :: String
   , zipCode :: String
   }

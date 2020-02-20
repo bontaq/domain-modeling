@@ -48,7 +48,7 @@ type CheckProductCodeExists =
   ProductCode -> Bool
 
 data AddressValidationError = AddressValidationError String
-data CheckedAddress = CheckedAddress UnvalidatedAddress
+data CheckedAddress = CheckedAddress Address
 
 type CheckAddressExists =
   UnvalidatedAddress -> AsyncResult AddressValidationError CheckedAddress
@@ -65,6 +65,10 @@ only50 str
   | length str > 50 = Left "Name can not be more than 50 chars"
   | otherwise       = Right str
 
+empty50 :: [a] -> Maybe (Either [Char] [a])
+empty50 []  = Nothing
+empty50 str = Just (only50 str)
+
 toCustomerInfo :: UnvalidatedCustomerInfo -> Either Error CustomerInfo
 toCustomerInfo UnvalidatedCustomerInfo { firstName, lastName, email } =
   let
@@ -74,8 +78,23 @@ toCustomerInfo UnvalidatedCustomerInfo { firstName, lastName, email } =
   in
     CustomerInfo <$> personalName <*> (Right email)
 
-toAddress :: CheckAddressExists -> UnvalidatedAddress -> Address
-toAddress = undefined
+toAddress :: CheckAddressExists -> UnvalidatedAddress -> IO (Either AddressValidationError Address)
+toAddress checkFn address = do
+  checkedAddress <- checkFn address
+  case checkedAddress of
+    Left e -> pure $ Left e
+    Right (CheckedAddress a) -> -- should be type CheckedAddress instead of Address
+      let
+        addressLine1' = only50 $ addressLine1 (a :: Address)
+        addressLine2' = empty50 <$> addressLine2 (a :: Address)
+        addressLine3' = empty50 <$> addressLine3 (a :: Address)
+        addressLine4' = empty50 <$> addressLine4 (a :: Address)
+        city' = city (a :: Address)
+        zipCode' = zipCode (a :: Address)
+      in
+        pure $ Right $ Address <$> addressLine1'
+  -- let addressLine1 = checkedAddress
+  -- pure checkedAddress
 
 validateOrder :: ValidateOrder
 validateOrder checkProductCodeExist checkAddressExists unvalidatedOrder =
