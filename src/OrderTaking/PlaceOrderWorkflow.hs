@@ -74,6 +74,7 @@ toCustomerInfo UnvalidatedCustomerInfo { firstName, lastName, email } =
   in
     CustomerInfo <$> personalName <*> (Right email)
 
+toAddress :: CheckAddressExists -> UnvalidatedAddress -> Address
 toAddress = undefined
 
 validateOrder :: ValidateOrder
@@ -84,7 +85,8 @@ validateOrder checkProductCodeExist checkAddressExists unvalidatedOrder =
     customerInfo' =
       toCustomerInfo $ customerInfo (unvalidatedOrder :: UnvalidatedOrder)
     shippingAddress' =
-      toAddress $ shippingAddress (unvalidatedOrder :: UnvalidatedOrder)
+      toAddress checkAddressExists
+      $ shippingAddress (unvalidatedOrder :: UnvalidatedOrder)
   in
     pure $ Right $ ValidatedOrder {
       orderId = OrderId ""

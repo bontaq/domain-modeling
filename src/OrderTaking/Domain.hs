@@ -37,7 +37,16 @@ data CustomerInfo = CustomerInfo {
 
 data ShippingAddress = ShippingAddress
 data BillingAddress = BillingAddress
-data Address = Address
+
+data Address = Address {
+  addressLine1 :: String
+  , addressLine2 :: String
+  , addressLine3 :: String
+  , addressLine4 :: String
+  , city :: String
+  , zipCode :: String
+  }
+
 data BillingAmount = BillingAmount
 
 data OrderLine = OrderLine {
