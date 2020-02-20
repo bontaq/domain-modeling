@@ -1,4 +1,11 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedLabels #-}
 
 module OrderTaking.DomainApi where
 
@@ -10,6 +17,12 @@ import OrderTaking.OrderId
 --
 -- Input data
 --
+-- import GHC.Records
+-- import GHC.OverloadedLabels (IsLabel(..))
+-- import GHC.TypeLits (Symbol)
+
+test :: UnvalidatedCustomerInfo -> String
+test = #firstName
 
 data UnvalidatedCustomerInfo = UnvalidatedCustomerInfo {
   firstName :: String
