@@ -4,6 +4,7 @@ module OrderTaking.PlaceOrderWorkflow where
 
 -- import OrderTaking.DomainApi
 import OrderTaking.Domain
+import OrderTaking.DomainApi
 
 --
 -- Internal state representing the order life cycle
@@ -51,10 +52,10 @@ data CheckedAddress = CheckedAddress UnvalidatedAddress
 type CheckAddressExists =
   UnvalidatedAddress -> AsyncResult AddressValidationError CheckedAddress
 
-data ValidationError = ValidationError {
-  fieldName :: String
-  , errorDescription :: String
-  }
+-- data ValidationError = ValidationError {
+--   fieldName :: String
+--   , errorDescription :: String
+--   }
 
 type ValidateOrder =
   CheckProductCodeExists  -- dep

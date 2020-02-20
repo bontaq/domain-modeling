@@ -3,7 +3,7 @@
 module OrderTaking.DomainApi where
 
 import Data.Time
-import OrderTaking.Domain (AsyncResult, OrderId, Address, EmailAddress, BillingAmount)
+import OrderTaking.Domain (AsyncResult, OrderId, Address, EmailAddress, BillingAmount, ValidationError)
 -- import OrderTaking.PlaceOrderWorkflow (PricedOrder, ValidationError)
 
 --
@@ -44,7 +44,7 @@ data OrderAcknowledgementSent = OrderAcknowledgementSent {
   , emailAddress :: EmailAddress
   }
 
-type OrderPlacedEvent = PricedOrder
+data OrderPlacedEvent = OrderPlacedEvent
 
 data BillableOrderPlacedEvent = BillableOrderPlacedEvent {
   orderId :: OrderId

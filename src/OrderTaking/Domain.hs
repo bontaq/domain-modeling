@@ -26,10 +26,10 @@ type CustomerId = String
 type Price = Int
 
 data UnvalidatedCustomerInfo = UnvalidatedCustomerInfo
-data UnvalidatedAddress = UnvalidatedAddress
+-- data UnvalidatedAddress = UnvalidatedAddress
 
-type AddressValidationService =
-  UnvalidatedAddress -> ValidatedAddress
+-- type AddressValidationService =
+--   UnvalidatedAddress -> ValidatedAddress
 
 data CustomerInfo = CustomerInfo
 data ShippingAddress = ShippingAddress
@@ -82,10 +82,10 @@ data OrderLine = OrderLine {
 --   | OrderPlaced OrderPlacedEvent
 --   | BillableOrderPlaced BillableOrderPlacedEvent
 
--- data ValidationError = ValidationError {
---   fieldName :: String
---   , errorDescription :: String
---   }
+data ValidationError = ValidationError {
+  fieldName :: String
+  , errorDescription :: String
+  }
 
 -- type PlaceOrderError = [ValidationError]
 
