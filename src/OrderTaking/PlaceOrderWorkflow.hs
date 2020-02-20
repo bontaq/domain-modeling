@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 
 module OrderTaking.PlaceOrderWorkflow where
@@ -58,7 +59,21 @@ type ValidateOrder =
   -> UnvalidatedOrder     -- input
   -> AsyncResult [ValidationError] ValidatedOrder
 
-toCustomerInfo = undefined
+type Error = String
+
+only50 str
+  | length str > 50 = Left "Name can not be more than 50 chars"
+  | otherwise       = Right str
+
+toCustomerInfo :: UnvalidatedCustomerInfo -> Either Error CustomerInfo
+toCustomerInfo UnvalidatedCustomerInfo { firstName, lastName, email } =
+  let
+    first = only50 firstName
+    last  = only50 lastName
+    personalName = PersonalName <$> first <*> last
+  in
+    CustomerInfo <$> personalName <*> (Right email)
+
 toAddress = undefined
 
 validateOrder :: ValidateOrder

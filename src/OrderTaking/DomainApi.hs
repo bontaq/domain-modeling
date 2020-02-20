@@ -11,8 +11,10 @@ import OrderTaking.OrderId
 -- Input data
 --
 
-data UnvalidatedCustomer = UnvalidatedCustomer {
-  name :: String
+data UnvalidatedCustomerInfo = UnvalidatedCustomerInfo {
+  firstName :: String
+  , lastName :: String
+  -- , name :: String
   , email :: String
   }
 
@@ -20,7 +22,7 @@ data UnvalidatedAddress = UnvalidatedAddress
 
 data UnvalidatedOrder = UnvalidatedOrder {
   orderId :: String
-  , customerInfo :: UnvalidatedCustomer
+  , customerInfo :: UnvalidatedCustomerInfo
   , shippingAddress :: UnvalidatedAddress
   }
 

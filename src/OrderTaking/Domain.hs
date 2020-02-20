@@ -25,9 +25,16 @@ type OrderLineId = String
 type CustomerId = String
 type Price = Int
 
-data UnvalidatedCustomerInfo = UnvalidatedCustomerInfo
+data PersonalName = PersonalName {
+  firstName :: String
+  , lastName :: String
+  }
 
-data CustomerInfo = CustomerInfo
+data CustomerInfo = CustomerInfo {
+  name :: PersonalName
+  , emailAddress :: EmailAddress
+  }
+
 data ShippingAddress = ShippingAddress
 data BillingAddress = BillingAddress
 data Address = Address
