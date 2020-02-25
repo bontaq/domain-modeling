@@ -27,7 +27,7 @@ instance forall x r a. HasField x r a => IsLabel x (r -> a) where
 
 data ValidatedOrderLine = ValidatedOrderLine {
   orderLineId :: OrderId
-  , productCode :: String
+  , productCode :: ProductCode
   , quantity :: Integer
   }
 
@@ -146,7 +146,8 @@ toValidatedOrderLine checkProductFn unvalidatedOrder = do
     True ->
       let
         orderLineId' = create $ #orderLineId unvalidatedOrder
-        productCode' = Right $ #productCode unvalidatedOrder
+        -- TODO: fix
+        productCode' = Right $ Gizmo $ GizmoCode $ #productCode unvalidatedOrder
         quantity'    = Right $ #quantity unvalidatedOrder
       in
          pure $ ValidatedOrderLine
@@ -194,4 +195,33 @@ type GetProductPrice = ProductCode -> Price
 type PriceOrder =
   GetProductPrice    -- dep
   -> ValidatedOrder  -- input
-  -> Either PricingError PricedOrder
+  -> AsyncResult PricingError PricedOrder
+
+toPricedOrderLine
+  :: GetProductPrice
+  -> ValidatedOrderLine
+  -> Either PricingError PricedOrderLine
+toPricedOrderLine getProductPrice orderLine =
+  let
+    price' = getProductPrice (#productCode orderLine)
+  in
+    undefined
+
+priceOrder :: PriceOrder
+priceOrder getProductPrice validatedOrder =
+  let lines =
+        fmap
+          (toPricedOrderLine getProductPrice)
+          (#orderLines validatedOrder)
+      amountToBill =
+        -- TODO: bad, but works
+        sum $ fmap sum $ fmap (fmap $ #price) lines
+  in
+    pure $ Right $ PricedOrder {
+      orderId = #orderId validatedOrder
+      , customerInfo = #customerInfo validatedOrder
+      , shippingAddress = #shippingAddress validatedOrder
+      , billingAddress = #billingAddress validatedOrder
+      , orderLines = fmap (\(Right a) -> a) lines
+      , amountToBill = amountToBill
+    }

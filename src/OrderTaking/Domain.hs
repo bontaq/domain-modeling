@@ -47,7 +47,7 @@ data Address = Address {
   , zipCode :: String
   }
 
-data BillingAmount = BillingAmount
+type BillingAmount = Int
 
 data OrderLine = OrderLine {
   id :: OrderLineId
