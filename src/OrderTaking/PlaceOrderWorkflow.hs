@@ -125,12 +125,23 @@ toAddress checkFn address = do
           <*> (Right city')
           <*> (Right zipCode')
 
+-- predicatePassThrough :: Error -> (a -> Bool) -> a -> Either Error a
+-- predicatePassThrough errMsg fn val =
+--   case fn val of
+--     True   -> Right val
+--     False  -> Left errMsg
+
 toValidatedOrderLine
   :: CheckProductCodeExists
   -> UnvalidatedOrderLine
   -> IO (Either OrderLineValidationError ValidatedOrderLine)
 toValidatedOrderLine checkProductFn unvalidatedOrder = do
   checkedProductCode <- checkProductFn $ #productCode unvalidatedOrder
+
+  -- TODO: use neat idea with predicatePassThrough
+  -- let checkProduct productCode =
+  --       predicatePassThrough "Invalid product code" checkProductFn productCode
+
   case checkedProductCode of
     True ->
       let
@@ -140,6 +151,8 @@ toValidatedOrderLine checkProductFn unvalidatedOrder = do
       in
          pure $ ValidatedOrderLine
           <$> orderLineId' <*> productCode' <*> quantity'
+    False ->
+      pure $ Left "ProductCode does not exist"
 
 toOrderQuantity :: ProductCode -> Int -> Either String OrderQuantity
 toOrderQuantity productCode quantity =
