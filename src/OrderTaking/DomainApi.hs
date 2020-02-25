@@ -36,6 +36,7 @@ data UnvalidatedOrder = UnvalidatedOrder {
   orderId :: String
   , customerInfo :: UnvalidatedCustomerInfo
   , shippingAddress :: UnvalidatedAddress
+  , orderLines :: [UnvalidatedOrderLine]
   }
 
 data UnvalidatedOrderLine = UnvalidatedOrderLine {

@@ -123,11 +123,11 @@ toAddress checkFn address = do
           <*> (Right city')
           <*> (Right zipCode')
 
-toValidatedOrder
+toValidatedOrderLine
   :: CheckProductCodeExists
   -> UnvalidatedOrderLine
   -> IO (Either OrderLineValidationError ValidatedOrderLine)
-toValidatedOrder checkProductFn unvalidatedOrder = do
+toValidatedOrderLine checkProductFn unvalidatedOrder = do
   checkedProductCode <- checkProductFn $ #productCode unvalidatedOrder
   case checkedProductCode of
     True ->
@@ -140,15 +140,22 @@ toValidatedOrder checkProductFn unvalidatedOrder = do
           <$> orderLineId' <*> productCode' <*> quantity'
 
 validateOrder :: ValidateOrder
-validateOrder checkProductCodeExist checkAddressExists unvalidatedOrder =
+validateOrder checkProductCodeExists checkAddressExists unvalidatedOrder =
   let
     orderId' =
       create $ #orderId unvalidatedOrder
+
     customerInfo' =
       toCustomerInfo $ #customerInfo unvalidatedOrder
+
     shippingAddress' =
       toAddress checkAddressExists
-      $ #shippingAddress unvalidatedOrder
+        $ #shippingAddress unvalidatedOrder
+
+    orderLines' =
+      fmap
+        (toValidatedOrderLine checkProductCodeExists)
+        (#orderLines unvalidatedOrder)
   in
     pure $ Right $ ValidatedOrder {
       orderId = OrderId ""
