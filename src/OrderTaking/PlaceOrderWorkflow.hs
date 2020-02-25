@@ -11,6 +11,8 @@ module OrderTaking.PlaceOrderWorkflow where
 import OrderTaking.Domain
 import OrderTaking.DomainApi
 import OrderTaking.OrderId
+import OrderTaking.UnitQuantity
+import OrderTaking.KilogramQuantity
 
 import GHC.Records
 import GHC.OverloadedLabels (IsLabel(..))
@@ -138,6 +140,14 @@ toValidatedOrderLine checkProductFn unvalidatedOrder = do
       in
          pure $ ValidatedOrderLine
           <$> orderLineId' <*> productCode' <*> quantity'
+
+toOrderQuantity :: ProductCode -> Int -> Either String OrderQuantity
+toOrderQuantity productCode quantity =
+  case productCode of
+    Widget _ ->
+      Unit <$> createUnitQuantity quantity
+    Gizmo _ ->
+      Kilos <$> createKilogramQuantity quantity
 
 validateOrder :: ValidateOrder
 validateOrder checkProductCodeExists checkAddressExists unvalidatedOrder =

@@ -5,6 +5,7 @@ module OrderTaking.Domain where
 import Data.List.NonEmpty
 import Data.Time
 import OrderTaking.UnitQuantity
+import OrderTaking.KilogramQuantity
 import OrderTaking.ValidatedAddress
 import OrderTaking.OrderId
 
@@ -16,7 +17,6 @@ data ProductCode =
   Widget WidgetCode
   | Gizmo GizmoCode
 
-data KilogramQuantity = KilogramQuantity Float
 data OrderQuantity =
   Unit UnitQuantity
   | Kilos KilogramQuantity
