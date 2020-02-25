@@ -12,22 +12,14 @@ module OrderTaking.DomainApi where
 import Data.Time
 import OrderTaking.Domain (AsyncResult, Address, EmailAddress, BillingAmount, ValidationError)
 import OrderTaking.OrderId
--- import OrderTaking.PlaceOrderWorkflow (PricedOrder, ValidationError)
 
 --
 -- Input data
 --
--- import GHC.Records
--- import GHC.OverloadedLabels (IsLabel(..))
--- import GHC.TypeLits (Symbol)
-
-test :: UnvalidatedCustomerInfo -> String
-test = #firstName
 
 data UnvalidatedCustomerInfo = UnvalidatedCustomerInfo {
   firstName :: String
   , lastName :: String
-  -- , name :: String
   , email :: String
   }
 

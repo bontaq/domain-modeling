@@ -59,7 +59,7 @@ data Order =
 type CheckProductCodeExists =
   ProductCode -> Bool
 
-data AddressValidationError = AddressValidationError String
+type AddressValidationError = String
 data CheckedAddress = CheckedAddress Address
 
 type CheckAddressExists =
@@ -77,9 +77,13 @@ only50 str
   | length str > 50 = Left "Name can not be more than 50 chars"
   | otherwise       = Right str
 
-empty50 :: Foldable t => Maybe (t a) -> Maybe (Either [Char] (t a))
-empty50 Nothing    = Nothing
-empty50 (Just str) = Just (only50 str)
+-- empty50 :: Maybe a -> (Either [Char] (Maybe a))
+-- empty50 :: (Maybe a) -> Either [Char] (Maybe b)
+empty50 :: Foldable t => Maybe (t a) -> Either [Char] (Maybe (t a))
+empty50 Nothing    = Right Nothing
+empty50 (Just str) = case only50 str of
+  Right str -> Right $ Just str
+  Left err  -> Left err
 
 toCustomerInfo :: UnvalidatedCustomerInfo -> Either Error CustomerInfo
 toCustomerInfo UnvalidatedCustomerInfo { firstName, lastName, email } =
@@ -97,15 +101,20 @@ toAddress checkFn address = do
     Left e -> pure $ Left e
     Right (CheckedAddress a) -> -- should be type CheckedAddress instead of Address
       let
-        addressLine1' = only50  $ #addressLine1 a
+        addressLine1' = only50 $ #addressLine1 a
         addressLine2' = empty50 $ #addressLine2 a
         addressLine3' = empty50 $ #addressLine3 a
         addressLine4' = empty50 $ #addressLine4 a
         city' = #city a
         zipCode' = #zipCode a
       in
-        undefined
-        -- pure $ Right $ Address <$> addressLine1'
+        pure $ Address
+          <$> addressLine1'
+          <*> addressLine2'
+          <*> addressLine3'
+          <*> addressLine4'
+          <*> (Right city')
+          <*> (Right zipCode')
 
 validateOrder :: ValidateOrder
 validateOrder checkProductCodeExist checkAddressExists unvalidatedOrder =

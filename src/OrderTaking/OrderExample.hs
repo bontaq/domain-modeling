@@ -60,5 +60,8 @@ data MailedEvent = MailedEvent {
   , receiver :: String
   }
 
-getTimestamp :: Event a -> String
-getTimestamp = #timestamp . #content
+getTimestamp :: Event a -> Integer
+getTimestamp = #timestamp
+
+printMailTimestamp :: Event MailedEvent -> Integer
+printMailTimestamp = getTimestamp
