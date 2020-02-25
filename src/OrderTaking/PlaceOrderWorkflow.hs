@@ -23,7 +23,11 @@ instance forall x r a. HasField x r a => IsLabel x (r -> a) where
 -- Internal state representing the order life cycle
 --
 
-type ValidatedOrderLine = OrderLine
+data ValidatedOrderLine = ValidatedOrderLine {
+  orderLineId :: OrderId
+  , productCode :: String
+  , quantity :: Integer
+  }
 
 data ValidatedOrder = ValidatedOrder {
   orderId :: OrderId
@@ -57,13 +61,16 @@ data Order =
 -- Services
 --
 type CheckProductCodeExists =
-  ProductCode -> Bool
+  String -> IO Bool
+  -- TODO: ProductCode -> IO Bool
 
 type AddressValidationError = String
 data CheckedAddress = CheckedAddress Address
 
 type CheckAddressExists =
   UnvalidatedAddress -> AsyncResult AddressValidationError CheckedAddress
+
+type OrderLineValidationError = String
 
 type ValidateOrder =
   CheckProductCodeExists  -- dep
@@ -115,6 +122,22 @@ toAddress checkFn address = do
           <*> addressLine4'
           <*> (Right city')
           <*> (Right zipCode')
+
+toValidatedOrder
+  :: CheckProductCodeExists
+  -> UnvalidatedOrderLine
+  -> IO (Either OrderLineValidationError ValidatedOrderLine)
+toValidatedOrder checkProductFn unvalidatedOrder = do
+  checkedProductCode <- checkProductFn $ #productCode unvalidatedOrder
+  case checkedProductCode of
+    True ->
+      let
+        orderLineId' = create $ #orderLineId unvalidatedOrder
+        productCode' = Right $ #productCode unvalidatedOrder
+        quantity'    = Right $ #quantity unvalidatedOrder
+      in
+         pure $ ValidatedOrderLine
+          <$> orderLineId' <*> productCode' <*> quantity'
 
 validateOrder :: ValidateOrder
 validateOrder checkProductCodeExist checkAddressExists unvalidatedOrder =

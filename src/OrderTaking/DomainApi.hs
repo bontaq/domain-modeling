@@ -38,6 +38,12 @@ data UnvalidatedOrder = UnvalidatedOrder {
   , shippingAddress :: UnvalidatedAddress
   }
 
+data UnvalidatedOrderLine = UnvalidatedOrderLine {
+  orderLineId :: String
+  , productCode :: String
+  , quantity :: Integer
+  }
+
 --
 -- Input Command
 --
