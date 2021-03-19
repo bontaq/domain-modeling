@@ -14,11 +14,11 @@ type Result a b = Either a b
 data WidgetCode = WidgetCode String
 data GizmoCode = GizmoCode String
 data ProductCode =
-  Widget WidgetCode
+  | Widget WidgetCode
   | Gizmo GizmoCode
 
 data OrderQuantity =
-  Unit UnitQuantity
+  | Unit UnitQuantity
   | Kilos KilogramQuantity
 
 type OrderLineId = String
@@ -26,12 +26,12 @@ type CustomerId = String
 type Price = Int
 
 data PersonalName = PersonalName {
-  firstName :: String
+  , firstName :: String
   , lastName :: String
   }
 
 data CustomerInfo = CustomerInfo {
-  name :: PersonalName
+  , name :: PersonalName
   , emailAddress :: EmailAddress
   }
 
@@ -39,7 +39,7 @@ data ShippingAddress = ShippingAddress
 data BillingAddress = BillingAddress
 
 data Address = Address {
-  addressLine1 :: String
+  , addressLine1 :: String
   , addressLine2 :: Maybe String
   , addressLine3 :: Maybe String
   , addressLine4 :: Maybe String
@@ -50,7 +50,7 @@ data Address = Address {
 type BillingAmount = Int
 
 data OrderLine = OrderLine {
-  id :: OrderLineId
+  , id :: OrderLineId
   , orderId :: OrderId
   , productCode :: ProductCode
   , orderQuantity :: OrderQuantity
@@ -58,12 +58,12 @@ data OrderLine = OrderLine {
   }
 
 data ValidationError = ValidationError {
-  fieldName :: String
+  , fieldName :: String
   , errorDescription :: String
   }
 
 data Command a = Command {
-  content :: a
+  , content :: a
   , timestamp :: UTCTime
   , userId :: String
   }
@@ -73,7 +73,7 @@ type EmailAddress = String
 data HtmlString = HtmlString String
 
 data OrderAcknowledgement = OrderAcknowledgement {
-  emailAddress :: EmailAddress
+  , emailAddress :: EmailAddress
   , letter :: HtmlString
   }
 
@@ -87,7 +87,7 @@ type SendOrderAcknowledgment =
 --
 
 data BillableOrderPlacedEvent = BillableOrderPlacedEvent {
-  orderId :: OrderId
+  , orderId :: OrderId
   , billingAddress :: Address
   , amountToBill :: BillingAmount
   }
